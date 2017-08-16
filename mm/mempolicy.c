@@ -1979,7 +1979,12 @@ retry_cpuset:
 	pol = get_vma_policy(vma, addr);
 	cpuset_mems_cookie = read_mems_allowed_begin();
 
-	if (pol->mode == MPOL_INTERLEAVE) {
+    if (vma->vm_flags&VM_NVM) {
+        printk(KERN_INFO "PHYSICAL IN NVM\N");
+        page = __alloc_pages_node(gfp, order, node_zonelist(1,gfp), policy_nodemask(gfp,pol));
+    }
+
+    if (pol->mode == MPOL_INTERLEAVE) {
 		unsigned nid;
 
 		nid = interleave_nid(pol, vma, addr, PAGE_SHIFT + order);
